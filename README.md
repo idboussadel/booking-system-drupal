@@ -36,3 +36,7 @@ composer require 'drupal/fullcalendar:^3.0'
 </div>
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/665faf82-9d69-4521-a5d6-c841eb9e5057" />
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/ca947a30-9881-452a-abfa-24f80b81ed9e" />
+
+
+### Appointments list:
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/6295a8a4-3c7d-4a5d-a14e-2e877e225929" />

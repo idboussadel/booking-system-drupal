@@ -551,15 +551,20 @@ class AppointmentAddForm extends FormBase
         break;
 
       case 6:
-        try {
-          \Drupal::logger('appointment')->debug('title: @type', ['@type' => $values['selected_type'] . 'RDV le ' . $values['start_date']]);
-          \Drupal::logger('appointment')->debug('Creating appointment with values: @values', ['@values' => print_r($values, TRUE)]);
+        $selected_type_entity = \Drupal::entityTypeManager()
+          ->getStorage('taxonomy_term')
+          ->load($values['selected_type']);
 
+        $start_date = new DateTime($values['start_date']);
+        $formatted_date = $start_date->format('d-m-Y H:i');
+
+        $title = $selected_type_entity->label() . ' RDV le ' . $formatted_date;
+        try {
           $appointment = \Drupal::entityTypeManager()->getStorage('appointment')->create([
-            'title' => $values['selected_type'] . 'RDV le ' . $values['start_date'],
+            'title' => $title,
             'agency' => $values['selected_agency'],
             'type' => $values['selected_type'],
-            'advisor' => $values['selected_advisor'],
+            'adviser' => $values['selected_advisor'],
             'start_date' => $values['start_date'],
             'end_date' => $values['end_date'],
             'customer_first_name' => $values['customer_first_name'],

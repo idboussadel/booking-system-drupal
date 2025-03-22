@@ -1,0 +1,7 @@
+administer appointment:
+  title: 'Administer appointments'
+  restrict access: true
+
+administer agency:
+  title: 'Administer agencies'
+  restrict access: true

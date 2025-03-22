@@ -1,53 +1,70 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drupal\appointment\Entity;
 
-use Drupal\Core\Entity\Annotation\ContentEntityType;
+use Drupal\appointment\AgencyInterface;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
- * Defines the Agency entity.
+ * Defines the agency entity class.
  *
  * @ContentEntityType(
  *   id = "agency",
  *   label = @Translation("Agency"),
+ *   label_collection = @Translation("Agencies"),
+ *   label_singular = @Translation("agency"),
+ *   label_plural = @Translation("agencies"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count agencies",
+ *     plural = "@count agencies",
+ *   ),
  *   handlers = {
  *     "list_builder" = "Drupal\appointment\Controller\AgencyListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "form" = {
- *     "default" = "Drupal\appointment\Form\Agency\AgencyAddForm",
  *       "add" = "Drupal\appointment\Form\Agency\AgencyAddForm",
+ *       "edit" = "Drupal\appointment\Form\AgencyForm",
  *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
+ *       "delete-multiple-confirm" = "Drupal\Core\Entity\Form\DeleteMultipleForm",
  *     },
  *     "route_provider" = {
  *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
- *     }
+ *     },
  *   },
  *   base_table = "agency",
- *   admin_permission = "administer agency entity",
+ *   admin_permission = "administer agency",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "name",
- *     "address" = "address",
- *     "uuid" = "uuid"
+ *     "uuid" = "uuid",
  *   },
  *   links = {
- *     "canonical" = "/agency/{agency}",
- *     "add-form" = "/admin/structure/agency/add",
- *     "edit-form" = "/agency/structure/agency/{agency}/edit",
- *     "delete-form" = "/agency/{agency}/delete",
- *     "collection" = "/admin/structure/agencies"
+ *    "canonical" = "/agency/{agency}",
+ *      "add-form" = "/admin/structure/agency/add",
+ *      "edit-form" = "/agency/structure/agency/{agency}/edit",
+ *      "delete-form" = "/agency/{agency}/delete",
+ *      "collection" = "/admin/structure/agencies"
  *   },
- *   field_ui_base_route = "entity.agency.settings"
+ *   field_ui_base_route = "entity.agency.settings",
  * )
  */
-class Agency extends ContentEntityBase
-{
-  public static function baseFieldDefinitions(EntityTypeInterface $entityType): array
-  {
-    $fields = parent::baseFieldDefinitions($entityType);
+final class Agency extends ContentEntityBase implements AgencyInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array {
+
+    $fields = parent::baseFieldDefinitions($entity_type);
+    // Name field.
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
       ->setRequired(TRUE)
@@ -63,6 +80,7 @@ class Agency extends ContentEntityBase
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    // Address field.
     $fields['address'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Address'))
       ->setDisplayOptions('form', [
@@ -78,6 +96,7 @@ class Agency extends ContentEntityBase
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    // Contact Information field.
     $fields['contact_info'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Contact Information'))
       ->setDisplayOptions('form', [
@@ -92,6 +111,7 @@ class Agency extends ContentEntityBase
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
+    // Working Hours field.
     $fields['field_working_hours'] = BaseFieldDefinition::create('office_hours')
       ->setLabel(t('Working Hours'))
       ->setDescription(t('The working hours of the agency.'))
@@ -116,4 +136,5 @@ class Agency extends ContentEntityBase
 
     return $fields;
   }
+
 }
