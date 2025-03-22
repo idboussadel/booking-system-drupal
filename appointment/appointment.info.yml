@@ -1,0 +1,14 @@
+name: 'Appointment'
+type: module
+description: 'Manages appointments, agencies, RDV, and advisers.'
+package: 'Custom'
+core_version_requirement: ^10
+dependencies:
+  - 'drupal:datetime'
+  - 'drupal:user'
+  - 'drupal:views'
+  - 'drupal:field'
+  - 'drupal:options'
+  - 'drupal:text'
+  - 'drupal:office_hours'
+  - 'drupal:fullcalendar'

@@ -1,0 +1,13 @@
+<div class="wrapper">
+  {% if types is empty %}
+    <p>Aucune type est disponible</p>
+  {% else %}
+    <div class="type-container">
+      {% for type in types %}
+        <div class="type-item {{ type.id == selected_type ? 'selected' : '' }}" data-type-id="{{ type.id }}">
+          <div class="type-name">{{ type.name }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

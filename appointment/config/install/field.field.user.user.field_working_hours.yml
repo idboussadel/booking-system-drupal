@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_working_hours
+  module:
+    - office_hours
+    - user
+id: user.user.field_working_hours
+field_name: field_working_hours
+entity_type: user
+bundle: user
+label: 'Working hours'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: office_hours

@@ -1,0 +1,16 @@
+<div class="wrapper">
+  {% if agencies is empty %}
+    <p>Aucune agence disponible</p>
+  {% else %}
+    <div class="agency-container">
+      {% for agency in agencies %}
+        <div class="agency-item {{ agency.id == selected_agency ? 'selected' : '' }}" data-agency-id="{{ agency.id }}">
+          <div class="agency-address">{{ agency.name | upper }}</div>
+          <hr class="agency-divider">
+          <div class="agency-name">{{ agency.address | capitalize }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+

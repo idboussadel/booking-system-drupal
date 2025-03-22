@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Contains appointment.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function appointment_theme($existing, $type, $theme, $path): array
+{
+  return [
+    'agency_selection' => [
+      'variables' => [
+        'agencies' => [],
+        'selected_agency' => '',
+      ],
+      'template' => 'agency-selection',
+    ],
+    'client_info_select' => [
+      'variables' => [
+        'start_time' => '',
+        'end_time' => '',
+        'date' => '',
+      ],
+      'template' => 'client-info-select',
+    ],
+    'appointment_type_selection' => [
+      'variables' => [
+        'types' => [],
+        'selected_type' => '',
+      ],
+      'template' => 'appointment-type-selection',
+    ],
+    'advisor_selection' => [
+      'variables' => [
+        'advisors' => [],
+        'selected_advisor' => '',
+      ],
+      'template' => 'advisor-selection',
+    ],
+    'rdv_details' => [
+      'variables' => [
+        'date' => '',
+        'start_time' => '',
+        'end_time' => '',
+      ],
+      'template' => 'rdv-details',
+    ],
+    'user_details' => [
+      'variables' => [
+        'rdv' => [],
+      ],
+      'template' => 'user-details',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_help().
+ */
+function appointment_help($route_name, RouteMatchInterface $route_match)
+{
+  if ($route_name == 'help.page.appointment') {
+    return '<p>' . t('This module provides a multi-step form for creating appointments.') . '</p>';
+  }
+}

@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Appointment Type'
+vid: appointment_type
+description: 'A vocabulary for appointment types.'
+weight: 0
+new_revision: false

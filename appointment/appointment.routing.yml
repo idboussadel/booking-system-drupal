@@ -1,0 +1,7 @@
+appointment.multi_step_form:
+  path: '/appointment/multi-step-form'
+  defaults:
+    _title: 'Appointment Booking'
+    _form: '\Drupal\appointment\Form\appointment\AppointmentAddForm'
+  requirements:
+    _permission: 'access content'

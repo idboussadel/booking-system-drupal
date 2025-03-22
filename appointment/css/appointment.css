@@ -1,0 +1,247 @@
+.wrapper {
+  padding: 16px;
+}
+
+.agency-container, .type-container, .advisor-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.agency-item, .type-item, .advisor-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: white;
+  color: #1a1a1a;
+  font-size: 22px;
+  transition: background-color 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.agency-name {
+  text-align: center;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 90px;
+}
+
+.agency-item:hover, .type-item:hover, .advisor-item:hover {
+  background-color: #f4f8fb;
+  border-color: #cbd5e0;
+}
+
+.agency-item.selected, .type-item.selected, .advisor-item.selected {
+  background-color: #64748b;
+  color: white;
+  border-color: #64748b;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.agency-address {
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 9px 25px 5px 25px;
+}
+
+.agency-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  width: 100%;
+  margin: 4px 0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.previous-btn {
+  margin-left: 0;
+  color: #64748b !important;
+  order: 1;
+  width: 150px !important;
+}
+
+.previous-btn:hover {
+  background-color: #f4f8fb !important;
+}
+
+.next-btn, .submit-btn {
+  background-color: #64748b !important;
+  color: white !important;
+  border: 1px solid #64748b !important;
+  order: 2;
+  margin-right: 0 !important;
+  width: 150px !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.next-btn:hover, .submit-btn:hover {
+  background-color: rgba(100, 116, 139, 0.8) !important;
+}
+
+.form-step1 {
+  display: flex;
+  justify-content: end !important;
+  width: 100%;
+}
+
+.fieldset__legend {
+  background-color: #64748b !important;
+}
+
+.fieldset {
+  border: 1px solid #64748b !important;
+}
+
+.agency-item {
+  min-width: 220px;
+
+}
+
+.type-item {
+  min-width: 260px;
+  padding: 15px;
+}
+
+.ajax-progress {
+  display: none !important;
+}
+
+.advisor-item svg {
+  width: 4rem;
+  height: 4rem;
+}
+
+.advisor-item {
+  padding: 17px;
+}
+
+.advisor-name {
+  margin-top: 7px;
+}
+
+.advisor-image {
+  background-color: white;
+  border-radius: 50%;
+  height: 67px;
+  width: 67px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 40px !important;
+}
+
+#block-olivero-page-title {
+  margin-bottom: 0 !important;
+}
+
+.fc .fc-toolbar {
+  flex-direction: row-reverse !important;
+}
+
+.fc .fc-toolbar > *:last-child {
+  display: none !important;
+}
+
+input.form-tel {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-element {
+  width: 100%;
+}
+
+.rdv-dates svg {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 20px;
+}
+
+.client-info-wrapper {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 15px;
+  width: 100%;
+}
+
+.rdv-dates {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid #cecece;
+  padding: 0 20px;
+  gap: 4px;
+  border-radius: 4px;
+  background-color: #f7fafc;
+}
+
+.rdv-dates h2, .rdv-dates h3, .rdv-dates p, .rdv-dates h4, .title-container h3 {
+  margin: 0;
+}
+
+.name-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+[type="tel"],
+[type="text"], [type="email"] {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.client-info {
+  border-radius: 4px;
+  border: 1px solid #cecece;
+  padding: 0 15px;
+}
+
+.fc-scrollgrid-section th {
+  background-color: #f7fafc !important;
+  padding: 1px 0 !important;
+}
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-details, .rdv-details {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #cecece;
+}
+
+.profile, .rdv {
+  border: 1px solid #cecece;
+  padding: 0 15px;
+  border-radius: 4px;
+}
+
+.rdv {
+  margin-top: 15px;
+}
+
+.submit-action {
+  display: flex;
+  justify-content: end;
+}

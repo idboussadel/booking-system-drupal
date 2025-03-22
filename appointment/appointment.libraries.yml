@@ -1,0 +1,8 @@
+appointment:
+  version: 1.x
+  js:
+    js/appointment.js: { }
+    js/fullcalendar.js: { }
+  css:
+    theme:
+      css/appointment.css: { }
