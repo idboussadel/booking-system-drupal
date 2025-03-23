@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides a multi-step form for appointment.
  */
-class AppointmentAddForm extends FormBase
+final class AppointmentAddForm extends FormBase
 {
 
   /**
@@ -23,14 +23,14 @@ class AppointmentAddForm extends FormBase
    *
    * @var PrivateTempStoreFactory
    */
-  protected $tempStoreFactory;
+  protected PrivateTempStoreFactory $tempStoreFactory;
 
   /**
    * The tempstore object.
    *
    * @var PrivateTempStore
    */
-  protected $tempStore;
+  protected PrivateTempStore $tempStore;
 
   /**
    * Constructs a new AppointmentAddForm.
@@ -126,6 +126,27 @@ class AppointmentAddForm extends FormBase
         $advisor_working_hours = $selected_advisor->get('field_working_hours')->getValue();
         $working_hours['advisor'] = $this->formatWorkingHours($advisor_working_hours);
       }
+    }
+    if (!empty($values['selected_advisor']&&!empty($values['selected_agency']))){
+      $appointments = \Drupal::entityTypeManager()
+        ->getStorage('appointment')
+        ->loadByProperties([
+          'agency' => $values['selected_agency'] ?? NULL,
+          'adviser' => $values['selected_advisor'] ?? NULL,
+        ]);
+
+      $appointment_events = [];
+      foreach ($appointments as $appointment) {
+        $type = \Drupal::entityTypeManager()
+          ->getStorage('taxonomy_term')
+          ->load($values['selected_type']);
+        $appointment_events[] = [
+          'start' => $appointment->get('start_date')->value,
+          'end' => $appointment->get('end_date')->value,
+          'title' => $type->label() . '-' .$appointment->get('customer_last_name')->value,
+        ];
+      }
+      $form['#attached']['drupalSettings']['appointment']['existing_appointments'] = $appointment_events;
     }
 
     // Pass working hours to the frontend.
@@ -394,6 +415,13 @@ class AppointmentAddForm extends FormBase
           '#attributes' => ['class' => ['next-btn']],
         ];
         break;
+      case 7:
+        $form['success'] = [
+          '#theme' => 'success_appointment',
+        ];
+        $this->tempStore->delete('step');
+        break;
+
     }
 
     $form['#attached']['library'][] = 'fullcalendar/fullcalendar';
@@ -427,6 +455,7 @@ class AppointmentAddForm extends FormBase
     }
     return $formatted_hours;
   }
+
 
   /**
    * Returns the "Next" button configuration.
@@ -576,10 +605,11 @@ class AppointmentAddForm extends FormBase
 
           $appointment->save();
 
-          $this->messenger()->addMessage($this->t('Your appointment has been successfully created.'));
-
-          $this->tempStore->delete('step');
           $this->tempStore->delete('values');
+          $this->tempStore->set('step', 7);
+
+          $form_state->setRedirect('appointment.success_page');
+
         } catch (\Exception $e) {
           \Drupal::logger('appointment')->error('Error creating appointment: @error', ['@error' => $e->getMessage()]);
           $this->messenger()->addError($this->t('An error occurred while creating your appointment. Please try again.'));
@@ -593,7 +623,7 @@ class AppointmentAddForm extends FormBase
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container)
+  public static function create(ContainerInterface $container): AppointmentAddForm|static
   {
     return new static(
       $container->get('tempstore.private')

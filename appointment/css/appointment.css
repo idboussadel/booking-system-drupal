@@ -192,7 +192,7 @@ input.form-tel {
   background-color: #f7fafc;
 }
 
-.rdv-dates h2, .rdv-dates h3, .rdv-dates p, .rdv-dates h4, .title-container h3 {
+.rdv-dates h2, .rdv-dates h3, .rdv-dates p, .rdv-dates h4, .title-container h3 ,.success-appointment h4,.success-appointment p{
   margin: 0;
 }
 
@@ -244,4 +244,33 @@ input.form-tel {
 .submit-action {
   display: flex;
   justify-content: end;
+}
+
+.unavailable-event{
+  font-size: 15px !important;
+  cursor: pointer;
+}
+
+.fc-event-main{
+  cursor: pointer;
+}
+
+.success-appointment svg {
+  width: 5rem;
+  height: 5rem;
+}
+
+.success-appointment{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border: 1px solid #cecece;
+  gap: 25px;
+  border-radius: 4px;
+  padding: 20px 0;
+}
+
+.success-appointment h4{
+  color: #1C274C;
 }

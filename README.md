@@ -32,11 +32,11 @@ composer require 'drupal/fullcalendar:^3.0'
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/9400eb81-cdd9-4883-b921-fda321adead3" />
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/25ca4115-2bae-42be-9837-77696d3cedb0" />
 <div align="center">
-  <img width="800" alt="image" src="https://github.com/user-attachments/assets/3e0d39a7-603d-4d5c-b05f-16e8c19f3162" />
+<img width="817" alt="image" src="https://github.com/user-attachments/assets/e8944fec-4347-4550-9ab0-d15c2acea410" />
 </div>
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/665faf82-9d69-4521-a5d6-c841eb9e5057" />
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/ca947a30-9881-452a-abfa-24f80b81ed9e" />
-
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/547f4a81-aa4b-4175-8e06-a5626280e6a6" />
 
 ### Appointments list:
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/6295a8a4-3c7d-4a5d-a14e-2e877e225929" />

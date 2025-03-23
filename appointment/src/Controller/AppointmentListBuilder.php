@@ -9,78 +9,39 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
-use Drupal\Core\Datetime\DateFormatterInterface; // Add this line.
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a listing of Appointment entities.
  */
-class AppointmentListBuilder extends EntityListBuilder implements FormInterface
-{
+class AppointmentListBuilder extends EntityListBuilder implements FormInterface {
 
-  /**
-   * The renderer service.
-   *
-   * @var \Drupal\Core\Render\RendererInterface
-   */
   protected $renderer;
-
-  /**
-   * The date formatter service.
-   *
-   * @var \Drupal\Core\Datetime\DateFormatterInterface
-   */
-  protected $dateFormatter; // Add this property.
-
-  /**
-   * The filter values.
-   *
-   * @var array
-   */
+  protected $dateFormatter;
   protected $filterValues = [
     'title' => '',
     'agency' => '',
     'type' => '',
-    'adviser' => '', // New filter for adviser name.
+    'adviser' => '',
   ];
 
-  /**
-   * Constructs a new AppointmentListBuilder object.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type definition.
-   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
-   *   The entity storage class.
-   * @param \Drupal\Core\Render\RendererInterface $renderer
-   *   The renderer service.
-   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
-   *   The date formatter service.
-   */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, RendererInterface $renderer, DateFormatterInterface $date_formatter) // Add this parameter.
-  {
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, RendererInterface $renderer, DateFormatterInterface $date_formatter) {
     parent::__construct($entity_type, $storage);
     $this->renderer = $renderer;
-    $this->dateFormatter = $date_formatter; // Initialize the date formatter.
+    $this->dateFormatter = $date_formatter;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type)
-  {
+  public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
       $entity_type,
       $container->get('entity_type.manager')->getStorage($entity_type->id()),
       $container->get('renderer'),
-      $container->get('date.formatter') // Add this service.
+      $container->get('date.formatter')
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function buildHeader(): array
-  {
+  public function buildHeader(): array {
     $header['title'] = $this->t('Title');
     $header['start_date'] = $this->t('Start Date');
     $header['end_date'] = $this->t('End Date');
@@ -90,79 +51,40 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface
     return $header + parent::buildHeader();
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function buildRow(EntityInterface $entity): array
-  {
+  public function buildRow(EntityInterface $entity): array {
     $row['title'] = $entity->get('title')->value;
-
-    // Format the start date.
-    $start_date = $entity->get('start_date')->value;
-    $formatted_start_date = $this->dateFormatter->format(strtotime($start_date), 'custom', 'd-m-Y H:i');
-    $row['start_date'] = $formatted_start_date;
-
-    // Format the end date.
-    $end_date = $entity->get('end_date')->value;
-    $formatted_end_date = $this->dateFormatter->format(strtotime($end_date), 'custom', 'd-m-Y H:i');
-    $row['end_date'] = $formatted_end_date;
-
-    $agency = $entity->get('agency')->entity;
-    $agency_name = $agency ? $agency->label() : '';
-    $agency_link = $agency ? $agency->toLink($agency_name)->toString() : '';
-    $row['agency'] = ['data' => $agency_link];
-
-    $adviser = $entity->get('adviser')->entity;
-    $adviser_name = $adviser ? $adviser->getDisplayName() : '';
-    $adviser_link = $adviser ? $adviser->toLink($adviser_name)->toString() : '';
-    $row['adviser'] = ['data' => $adviser_link];
-
+    $row['start_date'] = $this->dateFormatter->format(strtotime($entity->get('start_date')->value), 'custom', 'd-m-Y H:i');
+    $row['end_date'] = $this->dateFormatter->format(strtotime($entity->get('end_date')->value), 'custom', 'd-m-Y H:i');
+    $row['agency'] = ['data' => $entity->get('agency')->entity ? $entity->get('agency')->entity->toLink()->toString() : ''];
+    $row['adviser'] = ['data' => $entity->get('adviser')->entity ? $entity->get('adviser')->entity->toLink()->toString() : ''];
     $row['status'] = $entity->get('status')->value;
     return $row + parent::buildRow($entity);
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function render(): array
-  {
-    // Build the filter form.
+  public function render(): array {
     $build['filter_form'] = \Drupal::formBuilder()->getForm($this);
-
-    // Build the entity list.
     $build['table'] = parent::render();
-
     return $build;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId(): string
-  {
+  public function getFormId(): string {
     return 'appointment_filter_form';
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function buildForm(array $form, FormStateInterface $form_state): array
-  {
+  public function buildForm(array $form, FormStateInterface $form_state): array {
     $request = \Drupal::request();
     $this->filterValues = [
       'title' => $request->query->get('title', ''),
       'agency' => $request->query->get('agency', ''),
       'type' => $request->query->get('type', ''),
-      'adviser' => $request->query->get('adviser', ''), // New filter for adviser name.
+      'adviser' => $request->query->get('adviser', ''),
     ];
 
     $form['add_appointment'] = [
       '#type' => 'link',
       '#title' => $this->t('+ Add Appointment'),
       '#url' => \Drupal\Core\Url::fromUri('internal:/appointment/multi-step-form'),
-      '#attributes' => [
-        'class' => ['button', 'button--primary'],
-      ],
+      '#attributes' => ['class' => ['button', 'button--primary']],
     ];
 
     $form['filters'] = [
@@ -186,7 +108,6 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface
       '#placeholder' => $this->t('Enter adviser name...'),
     ];
 
-    // Load agencies for the agency filter.
     $agencies = \Drupal::entityTypeManager()->getStorage('agency')->loadMultiple();
     $agency_options = ['' => $this->t('- Any -')];
     foreach ($agencies as $agency) {
@@ -201,7 +122,6 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface
       '#default_value' => $this->filterValues['agency'],
     ];
 
-    // Load appointment types for the type filter.
     $types = \Drupal::entityTypeManager()
       ->getStorage('taxonomy_term')
       ->loadByProperties(['vid' => 'appointment_type']);
@@ -227,69 +147,45 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface
       '#value' => $this->t('Filter'),
     ];
 
-    // Add reset button.
     $form['filters']['actions']['reset'] = [
       '#type' => 'submit',
       '#value' => $this->t('Reset'),
-      '#submit' => ['::resetFilters'], // Custom submit handler for reset.
-      '#limit_validation_errors' => [], // Skip validation for reset.
+      '#submit' => ['::resetFilters'],
+      '#limit_validation_errors' => [],
     ];
 
     return $form;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state)
-  {
-    // No validation needed for this simple filter.
-  }
+  public function validateForm(array &$form, FormStateInterface $form_state) {}
 
-  /**
-   * {@inheritdoc}
-   */
-  public function submitForm(array &$form, FormStateInterface $form_state)
-  {
-    // Set the filter values from the form input.
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->filterValues = [
       'title' => $form_state->getValue('title'),
       'agency' => $form_state->getValue('agency'),
       'type' => $form_state->getValue('type'),
-      'adviser' => $form_state->getValue('adviser'), // New filter for adviser name.
+      'adviser' => $form_state->getValue('adviser'),
     ];
 
-    // Redirect to the same page with the filter values in the query parameters.
     $form_state->setRedirect('<current>', [], [
       'query' => [
         'title' => $this->filterValues['title'],
         'agency' => $this->filterValues['agency'],
         'type' => $this->filterValues['type'],
-        'adviser' => $this->filterValues['adviser'], // New filter for adviser name.
+        'adviser' => $this->filterValues['adviser'],
       ],
     ]);
   }
 
-  /**
-   * Custom submit handler for the reset button.
-   */
-  public function resetFilters(array &$form, FormStateInterface $form_state)
-  {
-    // Redirect to the same page without any query parameters to reset filters.
+  public function resetFilters(array &$form, FormStateInterface $form_state): void {
     $form_state->setRedirect('<current>');
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function getEntityIds(): array
-  {
-    // Get the base query.
+  protected function getEntityIds(): array {
     $query = $this->getStorage()->getQuery()
       ->accessCheck(TRUE)
       ->sort($this->entityType->getKey('label'));
 
-    // Apply filters.
     if (!empty($this->filterValues['title'])) {
       $query->condition('title', $this->filterValues['title'], 'CONTAINS');
     }
@@ -300,7 +196,6 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface
       $query->condition('type', $this->filterValues['type']);
     }
     if (!empty($this->filterValues['adviser'])) {
-      // Filter by adviser's display name.
       $query->condition('adviser.entity.name', $this->filterValues['adviser'], 'CONTAINS');
     }
 

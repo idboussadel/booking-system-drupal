@@ -56,6 +56,9 @@ function appointment_theme($existing, $type, $theme, $path): array
       ],
       'template' => 'user-details',
     ],
+  'success_appointment' => [
+  'template' => 'success-appointment',
+],
   ];
 }
 

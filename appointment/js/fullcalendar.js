@@ -16,13 +16,14 @@
             }
 
             const workingHours = settings.appointment.working_hours;
+            const existingAppointments = settings.appointment.existing_appointments || [];
+
             const businessHours = [
               ...(workingHours.agency || []),
             ];
-            console.log('businessHours:', businessHours);
 
             // Generate unavailable hours for the advisor
-            const unavailableEvents = generateUnavailableEvents(workingHours.agency, workingHours.advisor);
+            const unavailableEvents = generateUnavailableEvents(workingHours.agency, workingHours.advisor,existingAppointments);
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
               initialView: 'timeGridWeek',
@@ -69,7 +70,6 @@
                 document.getElementById('selected-end-date').value = endDateTime;
               },
               eventContent: function (arg) {
-                // Customize the content of the unavailable events
                 return {html: `<div class="unavailable-event">${arg.event.title}</div>`};
               },
             });
@@ -89,7 +89,7 @@
   /**
    * Generate unavailable events based on agency and advisor working hours.
    */
-  function generateUnavailableEvents(agencyHours, advisorHours) {
+  function generateUnavailableEvents(agencyHours, advisorHours,existingAppointments) {
     const unavailableEvents = [];
 
     if (!advisorHours || !agencyHours) return unavailableEvents;
@@ -127,6 +127,19 @@
           color: '#2c3e50',
         });
       }
+    }
+
+    if (existingAppointments && existingAppointments.length > 0) {
+      existingAppointments.forEach(appointment => {
+        unavailableEvents.push({
+          start: appointment.start,
+          end: appointment.end,
+          title: appointment.title,
+          color: 'white',
+          textColor: '#2c3e50',
+          borderColor: '#2c3e50',
+        });
+      });
     }
 
     return unavailableEvents;
