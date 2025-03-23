@@ -8,6 +8,9 @@ composer require 'drupal/office_hours:^1.23'
 composer require 'drupal/fullcalendar:^3.0'
 ```
 
+<img width="641" alt="image" src="https://github.com/user-attachments/assets/e05dac88-58e1-4fc4-ac81-ba299dd2e880" />
+
+
 ### Add agency :
 
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/acc9cf1a-fe65-473e-b756-1e8638e11ad8" />
