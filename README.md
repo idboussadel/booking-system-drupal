@@ -12,7 +12,7 @@
 
 A comprehensive appointment booking system for Drupal that enables users to book, manage, and track appointments with advisers across multiple agencies.
 
-## Features
+## 🗓️ Features
 
 - **Multi-step Booking Process**: Intuitive interface for selecting agencies, advisers, and time slots
 - **Custom Entity Types**: Appointment and Agency entities with configurable fields
@@ -21,6 +21,40 @@ A comprehensive appointment booking system for Drupal that enables users to book
 - **Administrative Dashboard**: Comprehensive management interface for appointments
 - **Mobile Responsive**: Works across all device sizes
 - **Multilingual Support**: French and English included by default
+
+## 📑 Entities Used
+
+#### For Appointments:
+
+- **Title**
+- **Date and Time**
+- **Agency Reference**
+- **Adviser Reference**
+- **Customer Information:**
+  - **first_name**
+  - **last_name**
+  - **Email**
+  - **Phone**
+- **Status:**
+  - ⏳ *Pending*
+  - ✅ *Confirmed*
+  - ❌ *Cancelled*
+- **Notes**
+
+---
+
+#### Agencies
+- **Name**
+- **Address**
+- **Contact Information**
+- **Operating Hours**
+
+---
+
+#### Advisers (User Fields)
+- **Agency Reference**
+- **Working Hours**
+- **Specializations**
 
 ## Installation
 
@@ -66,7 +100,7 @@ Navigate to `/admin/structure/taxonomy/manage/appointment_type/overview`
 
 ---
 
-### Booking form :
+### 📅 Booking form :
 Navigate to `/prendre-un-rendez-vous`
 
 1. **Agency Selection**
@@ -78,24 +112,33 @@ Navigate to `/prendre-un-rendez-vous`
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/9400eb81-cdd9-4883-b921-fda321adead3" />
 
 3. **Adviser Selection** : The list of advisers is filtered based on the selected agency.
-   <img width="990" alt="image" src="https://github.com/user-attachments/assets/25ca4115-2bae-42be-9837-77696d3cedb0" />
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/25ca4115-2bae-42be-9837-77696d3cedb0" />
 
 4. **Date and Time Selection**
+
 <div align="center">
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/e8944fec-4347-4550-9ab0-d15c2acea410" />
 </div>
 
 5. **Personal Information**
-   <img width="990" alt="image" src="https://github.com/user-attachments/assets/665faf82-9d69-4521-a5d6-c841eb9e5057" />
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/665faf82-9d69-4521-a5d6-c841eb9e5057" />
 
 6. **Confirmation** : Review your booking details and confirm the appointment. confirmation emails are sent.
-   <img width="990" alt="image" src="https://github.com/user-attachments/assets/ca947a30-9881-452a-abfa-24f80b81ed9e" />
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/ca947a30-9881-452a-abfa-24f80b81ed9e" />
 
 7. **Success Page**
-   <img width="990" alt="image" src="https://github.com/user-attachments/assets/547f4a81-aa4b-4175-8e06-a5626280e6a6" />
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/547f4a81-aa4b-4175-8e06-a5626280e6a6" />
 
 #### Customer confirmation email :
 I used Mailhog for email testing.
+
+```bash
+docker run --rm --name mailhog -p 8025:8025 -p 1025:1025 mailhog/mailhog
+```
 
 <img width="1439" alt="image" src="https://github.com/user-attachments/assets/453fe02f-0aaf-4570-8b48-7c6dd0799832" />
 

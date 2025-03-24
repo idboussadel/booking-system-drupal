@@ -6,4 +6,3 @@ appointment:
   css:
     theme:
       css/appointment.css: { }
-      css/mails.css: { }
