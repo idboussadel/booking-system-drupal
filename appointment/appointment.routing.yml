@@ -5,3 +5,19 @@ appointment.multi_step_form:
     _form: '\Drupal\appointment\Form\appointment\AppointmentAddForm'
   requirements:
     _permission: 'access content'
+
+appointment.search:
+  path: '/appointments/search'
+  defaults:
+    _form: '\Drupal\appointment\Form\appointment\AppointmentSearchForm'
+    _title: 'Search Appointments by Phone'
+  requirements:
+    _permission: 'access content'
+
+appointment.edit:
+  path: '/appointment/edit/{id}'
+  defaults:
+    _title: 'Appointment Booking'
+    _form: '\Drupal\appointment\Form\appointment\AppointmentEditForm'
+  requirements:
+    _permission: 'access content'

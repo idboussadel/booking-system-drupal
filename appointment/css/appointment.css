@@ -88,7 +88,7 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.next-btn:hover, .submit-btn:hover {
+.next-btn:hover, .submit-btn:hover,.search-btn:hover {
   background-color: rgba(100, 116, 139, 0.8) !important;
 }
 
@@ -120,7 +120,7 @@
   display: none !important;
 }
 
-.advisor-item svg {
+.advisor-item svg{
   width: 4rem;
   height: 4rem;
 }
@@ -192,7 +192,7 @@ input.form-tel {
   background-color: #f7fafc;
 }
 
-.rdv-dates h2, .rdv-dates h3, .rdv-dates p, .rdv-dates h4, .title-container h3 ,.success-appointment h4,.success-appointment p{
+.rdv-dates h2,.appointment-details h3 , .appointment-details p ,.rdv-dates h3, .rdv-dates p, .rdv-dates h4, .title-container h3 ,.success-appointment h4,.success-appointment p{
   margin: 0;
 }
 
@@ -273,4 +273,143 @@ input.form-tel {
 
 .success-appointment h4{
   color: #1C274C;
+}
+
+.search-form{
+  display: flex;
+  gap: 15px;
+  align-items: end;
+}
+
+.search-form > *:last-child {
+  margin-top: auto;
+}
+
+.search-btn {
+  background-color: #64748b !important;
+  color: white !important;
+  border: 1px solid #64748b !important;
+  margin-right: 10px !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  width: 150px !important;
+}
+
+.appointment-list{
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
+.appointment-list svg {
+  width: 5rem;
+  height: 5rem;
+}
+.appointment-actions{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.appointment-card{
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.appointment-details{
+  flex: 1;
+}
+
+.button--edit,.button--delete{
+  background-color: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+}
+
+.button--delete{
+  color: #E63946 !important;
+}
+
+.button--delete:hover{
+  color: #C5303A !important;
+}
+
+.appointment-list{
+  border: 1px solid #cecece;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.appointment-actions svg{
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.button span{
+  margin-left: 5px;
+}
+
+.appointment-results{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.search-form .form-actions {
+  display: block !important;
+}
+
+.search-form .form-tel{
+  width: 20rem !important;
+}
+
+
+/* email-styles.css */
+.email-container {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.email-content {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  padding: 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.email-header {
+  color: #333333;
+  margin-top: 0;
+}
+
+.email-text {
+  font-size: 16px;
+}
+
+.appointment-details {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-left: 4px solid #3498db;
+  margin: 20px 0;
+}
+
+.detail-item {
+  margin: 5px 0;
+}
+
+.detail-label {
+  color: #333;
+  font-weight: bold;
+}
+
+.email-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eeeeee;
 }

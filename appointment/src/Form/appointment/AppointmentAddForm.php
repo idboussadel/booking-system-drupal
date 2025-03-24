@@ -68,8 +68,7 @@ final class AppointmentAddForm extends FormBase
         ->loadByProperties(['vid' => 'appointment_type']);
 
       $user_storage = \Drupal::entityTypeManager()->getStorage('user');
-
-    } catch (InvalidPluginDefinitionException|PluginNotFoundException $e) {
+    } catch (InvalidPluginDefinitionException | PluginNotFoundException $e) {
       \Drupal::logger('appointment')->error($e->getMessage());
       $agencies = [];
       $terms = [];
@@ -127,7 +126,7 @@ final class AppointmentAddForm extends FormBase
         $working_hours['advisor'] = $this->formatWorkingHours($advisor_working_hours);
       }
     }
-    if (!empty($values['selected_advisor']&&!empty($values['selected_agency']))){
+    if (!empty($values['selected_advisor'] && !empty($values['selected_agency']))) {
       $appointments = \Drupal::entityTypeManager()
         ->getStorage('appointment')
         ->loadByProperties([
@@ -143,7 +142,7 @@ final class AppointmentAddForm extends FormBase
         $appointment_events[] = [
           'start' => $appointment->get('start_date')->value,
           'end' => $appointment->get('end_date')->value,
-          'title' => $type->label() . '-' .$appointment->get('customer_last_name')->value,
+          'title' => $type->label() . '-' . $appointment->get('customer_last_name')->value,
         ];
       }
       $form['#attached']['drupalSettings']['appointment']['existing_appointments'] = $appointment_events;
@@ -421,7 +420,6 @@ final class AppointmentAddForm extends FormBase
         ];
         $this->tempStore->delete('step');
         break;
-
     }
 
     $form['#attached']['library'][] = 'fullcalendar/fullcalendar';
@@ -605,11 +603,13 @@ final class AppointmentAddForm extends FormBase
 
           $appointment->save();
 
+          \Drupal::service('appointment.email_service')
+            ->sendAppointmentConfirmationEmails($appointment->id());
+
           $this->tempStore->delete('values');
           $this->tempStore->set('step', 7);
 
           $form_state->setRedirect('appointment.success_page');
-
         } catch (\Exception $e) {
           \Drupal::logger('appointment')->error('Error creating appointment: @error', ['@error' => $e->getMessage()]);
           $this->messenger()->addError($this->t('An error occurred while creating your appointment. Please try again.'));

@@ -35,11 +35,23 @@ composer require 'drupal/fullcalendar:^3.0'
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/9400eb81-cdd9-4883-b921-fda321adead3" />
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/25ca4115-2bae-42be-9837-77696d3cedb0" />
 <div align="center">
-<img width="817" alt="image" src="https://github.com/user-attachments/assets/e8944fec-4347-4550-9ab0-d15c2acea410" />
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/e8944fec-4347-4550-9ab0-d15c2acea410" />
 </div>
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/665faf82-9d69-4521-a5d6-c841eb9e5057" />
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/ca947a30-9881-452a-abfa-24f80b81ed9e" />
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/547f4a81-aa4b-4175-8e06-a5626280e6a6" />
 
+#### Customer confirmation email :
+<img width="1439" alt="image" src="https://github.com/user-attachments/assets/453fe02f-0aaf-4570-8b48-7c6dd0799832" />
+
+#### Adviser email info :
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/766abff6-ac09-4d25-89c2-8c6c8a905a41" />
+
+---
+
 ### Appointments list:
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/6295a8a4-3c7d-4a5d-a14e-2e877e225929" />
+
+### search by phone :
+<img width="1000" alt="image" src="https://github.com/user-attachments/assets/08497498-8586-4349-bf6c-70ab8c81596c" />
+
