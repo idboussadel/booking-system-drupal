@@ -1,5 +1,5 @@
 appointment.multi_step_form:
-  path: '/appointment/multi-step-form'
+  path: '/prendre-un-rendez-vous'
   defaults:
     _title: 'Appointment Booking'
     _form: '\Drupal\appointment\Form\appointment\AppointmentAddForm'

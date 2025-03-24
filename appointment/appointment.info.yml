@@ -12,3 +12,4 @@ dependencies:
   - 'drupal:text'
   - 'drupal:office_hours'
   - 'drupal:fullcalendar'
+  - 'drupal:symfony_mailer'
