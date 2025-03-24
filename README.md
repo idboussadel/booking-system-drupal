@@ -41,7 +41,6 @@ A comprehensive appointment booking system for Drupal that enables users to book
   - ❌ *Cancelled*
 - **Notes**
 
----
 
 #### Agencies
 - **Name**
@@ -49,12 +48,13 @@ A comprehensive appointment booking system for Drupal that enables users to book
 - **Contact Information**
 - **Operating Hours**
 
----
 
 #### Advisers (User Fields)
 - **Agency Reference**
 - **Working Hours**
 - **Specializations**
+
+---
 
 ## Installation
 
@@ -157,3 +157,7 @@ Navigate to `/appointments/search`
 
 <img width="1000" alt="image" src="https://github.com/user-attachments/assets/08497498-8586-4349-bf6c-70ab8c81596c" />
 
+---
+
+## 🔧 Contribute & Customize
+Feel free to **modify** this module to suit your specific needs. Contributions and improvements are always welcome! 🚀
