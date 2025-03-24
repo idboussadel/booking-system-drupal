@@ -70,10 +70,12 @@ Navigate to `/admin/structure/taxonomy/manage/appointment_type/overview`
 Navigate to `/prendre-un-rendez-vous`
 
 1. **Agency Selection**
-   <img width="990" alt="image" src="https://github.com/user-attachments/assets/9458068b-e082-4518-84c1-f00ba404d93e" />
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/9458068b-e082-4518-84c1-f00ba404d93e" />
 
 2. **Appointment Type Selection**
-   <img width="990" alt="image" src="https://github.com/user-attachments/assets/9400eb81-cdd9-4883-b921-fda321adead3" />
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/9400eb81-cdd9-4883-b921-fda321adead3" />
 
 3. **Adviser Selection** : The list of advisers is filtered based on the selected agency.
    <img width="990" alt="image" src="https://github.com/user-attachments/assets/25ca4115-2bae-42be-9837-77696d3cedb0" />
