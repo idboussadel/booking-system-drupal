@@ -1,6 +1,7 @@
 <div class="wrapper">
   {% if types is empty %}
-    <p>Aucune type est disponible</p>
+    <p>{{ 'No type is available.'|t }}</p>
+
   {% else %}
     <div class="type-container">
       {% for type in types %}

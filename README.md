@@ -85,6 +85,15 @@ Navigate to `/admin/structure/agency/add`
 
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/acc9cf1a-fe65-473e-b756-1e8638e11ad8" />
 
+### Edit agency :
+
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/575446e0-03e2-40aa-b44c-99c3be07cfe9" />
+
+### Agencies list :
+
+<img width="1437" alt="image" src="https://github.com/user-attachments/assets/cff0cdb8-f86f-454a-9699-09232e51aba9" />
+
+
 ### Add advisor :
 Navigate to `/admin/people/create`
 
@@ -94,10 +103,6 @@ Navigate to `/admin/people/create`
 Navigate to `/admin/structure/taxonomy/manage/appointment_type/overview`
 
 <img width="1438" alt="image" src="https://github.com/user-attachments/assets/27dcd181-3352-4483-bc6d-2d367d362967" />
-
-### Agencies list:
-
-<img width="1437" alt="image" src="https://github.com/user-attachments/assets/cff0cdb8-f86f-454a-9699-09232e51aba9" />
 
 ---
 

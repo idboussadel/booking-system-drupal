@@ -238,7 +238,7 @@ class AppointmentAddForm extends FormBase
       case 4:
         $form['step_4'] = [
           '#type' => 'fieldset',
-          '#title' => $this->t('Step 4: choisissez le jour et l\'heure de votre rendez-vous'),
+          '#title' => $this->t('Step 4: Choose the day and time for your appointment'),
         ];
 
         $form['step_4']['calendar'] = [
@@ -321,7 +321,7 @@ class AppointmentAddForm extends FormBase
 
         $form['client_info_wrapper']['client_info']['accept_terms'] = [
           '#type' => 'checkbox',
-          '#title' => $this->t('En cochant cette case, j\'accepte et je reconnais avoir pris connaissance des conditions générales d\'utilisation.'),
+          '#title' => $this->t('By checking this box, I accept and acknowledge that I have read the Terms and Conditions.'),
           '#required' => TRUE,
           '#default_value' => $values['accept_terms'] ?? FALSE,
         ];
@@ -607,7 +607,7 @@ class AppointmentAddForm extends FormBase
 
           $appointment->save();
           $this->tempStore->set('appointment_id', $appointment->id());
-          
+
           \Drupal::service('appointment.email_service')
             ->sendAppointmentConfirmationEmails($appointment->id());
 

@@ -1,11 +1,11 @@
 <div class="user-details">
   <div>
-    <p>Prenom : {{ rdv.customer_first_name }}</p>
-    <p>Nom : {{ rdv.customer_last_name }}</p>
+    <p>{{ 'First Name'|t }} : {{ rdv.customer_first_name }}</p>
+    <p>{{ 'Last Name'|t }} : {{ rdv.customer_last_name }}</p>
   </div>
 
   <div>
-    <p>Email : {{ rdv.customer_email }}</p>
-    <p>Tele : {{ rdv.customer_phone }}</p>
+    <p>{{ 'Email'|t }} : {{ rdv.customer_email }}</p>
+    <p>{{ 'Phone'|t }} : {{ rdv.customer_phone }}</p>
   </div>
 </div>

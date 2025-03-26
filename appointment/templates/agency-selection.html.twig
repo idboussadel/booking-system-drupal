@@ -1,6 +1,7 @@
 <div class="wrapper">
   {% if agencies is empty %}
-    <p>Aucune agence disponible</p>
+    <p>{{ 'No agency is available.'|t }}</p>
+
   {% else %}
     <div class="agency-container">
       {% for agency in agencies %}

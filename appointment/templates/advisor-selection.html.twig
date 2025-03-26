@@ -1,6 +1,6 @@
 <div class="wrapper">
   {% if advisors is empty %}
-    <p>Aucune advisor est disponible</p>
+    <p>{{ 'No advisor is available.'|t }}</p>
   {% else %}
     <div class="advisor-container">
       {% for advisor in advisors %}

@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"
+
+msgid "Step 1: Choose an agency"
+msgstr "Étape 1 : Choisissez une agence"
+
+msgid "Step 2: Select an appointment type"
+msgstr "Étape 2 : Sélectionnez un type de rendez-vous"
+
+msgid "Step 3: Select an advisor"
+msgstr "Étape 3 : Sélectionnez un conseiller"
+
+msgid "Step 4: Choose the day and time for your appointment"
+msgstr "Étape 4 : Choisissez le jour et l'heure de votre rendez-vous"
+
+msgid "By checking this box, I accept and acknowledge that I have read the Terms and Conditions."
+msgstr "En cochant cette case, j'accepte et reconnais avoir lu les Termes et Conditions."
+
+msgid "First Name"
+msgstr "Prénom"
+
+msgid "Last Name"
+msgstr "Nom"
+
+msgid "Phone"
+msgstr "Téléphone"
+
+msgid "Day"
+msgstr "Jour"
+
+msgid "Time"
+msgstr "Heure"
+
+msgid "Your appointment"
+msgstr "Votre rendez-vous"
+
+msgid "Hour"
+msgstr "Heure"
+
+msgid "A vocabulary for appointment types."
+msgstr "Un vocabulaire pour les types de rendez-vous."
+
+msgid "No agency is available."
+msgstr "Aucune agence n'est disponible."
+
+msgid "No advisor is available."
+msgstr "Aucun conseiller n'est disponible."
+
+msgid "No type is available."
+msgstr "Aucun type n'est disponible."
