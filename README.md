@@ -161,6 +161,8 @@ Navigate to `/admin/structure/appointments`
 
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/e0a1828c-4d33-4ed1-8660-9cedcc2b4ea0" />
 
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/b1aa2c75-b8be-41ff-86bd-187c0de595a6" />
+
 To optimize the export process and prevent memory limit errors, we utilized Drupal's Batch API to export data in chunks of 100 records at a time.
 
 <div align="center">
