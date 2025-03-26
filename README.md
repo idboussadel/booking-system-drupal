@@ -2,13 +2,12 @@
   <img width="250" alt="image" src="https://github.com/user-attachments/assets/34c9e165-2349-4914-978a-ab55f7c10917" />
 
 [![Drupal](https://img.shields.io/badge/Drupal-10+-%230678BE?logo=drupal)](https://www.drupal.org)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-green.svg)](https://github.com/your-org/appointment-booking-system/graphs/commit-activity)
 [![PHP](https://img.shields.io/badge/PHP-8.3+-%23777BB4?logo=php)](https://php.net/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-Yes-green.svg)](https://github.com/your-org/appointment-booking-system/graphs/commit-activity)
+
 </div>
 
 # Booking system :
-
-🆘 the module is not finished yet.
 
 A comprehensive appointment booking system for Drupal that enables users to book, manage, and track appointments with advisers across multiple agencies.
 
@@ -124,16 +123,21 @@ Navigate to `/prendre-un-rendez-vous`
 4. **Date and Time Selection**
 
 <div align="center">
-<img width="990" alt="image" src="https://github.com/user-attachments/assets/e8944fec-4347-4550-9ab0-d15c2acea410" />
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/d264f1de-6831-4b21-b9f9-fa0ad93e57a8" />
 </div>
 
 5. **Personal Information**
 
-<img width="990" alt="image" src="https://github.com/user-attachments/assets/665faf82-9d69-4521-a5d6-c841eb9e5057" />
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/0afe39f3-1bc3-4bb9-b0d1-96e7693ac5f7" />
 
 6. **Confirmation** : Review your booking details and confirm the appointment. confirmation emails are sent.
 
-<img width="990" alt="image" src="https://github.com/user-attachments/assets/ca947a30-9881-452a-abfa-24f80b81ed9e" />
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/3c335ec7-ce99-4a4d-93cf-e9ef4e8c05b7" />
+
+I have also implemented translation support for French across all views by adding translations in the appointment.fr.po file to customize the messages displayed in each language :
+
+<img width="979" alt="image" src="https://github.com/user-attachments/assets/d3b6566a-f4e6-43a6-86f3-5647e0ef0df6" />
+
 
 7. **Success Page**
 
@@ -159,21 +163,32 @@ Navigate to `/admin/structure/appointments`
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/e0a1828c-4d33-4ed1-8660-9cedcc2b4ea0" />
 
 To optimize the export process and prevent memory limit errors, we utilized Drupal's Batch API to export data in chunks of 100 records at a time.
-![image](https://github.com/user-attachments/assets/8a248c93-bfdd-4325-a7bc-2013b0a9ae83)
+
+<img width="900" alt="image" src="https://github.com/user-attachments/assets/8a248c93-bfdd-4325-a7bc-2013b0a9ae83" />
 
 ---
 
 ### search by phone :
 Navigate to `/appointments/search`
 
-<img width="970" alt="image" src="https://github.com/user-attachments/assets/08497498-8586-4349-bf6c-70ab8c81596c" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/c13d8857-c7c8-4fe6-95ae-3a7be5395946" />
+
+After clicking 'Edit', you will be redirected to /appointments/55/edit, and an email will be sent with a random number to verify that the appointment belongs to you.
+
 <img width="970" alt="image" src="https://github.com/user-attachments/assets/a3669228-e29c-4cd6-825a-273d313c40da" />
 
-<img width="1440" alt="image" src="https://github.com/user-attachments/assets/c8e39ab6-9571-4695-823f-96d453461a93" />
-<img width="970" alt="image" src="https://github.com/user-attachments/assets/939439ab-11b7-470b-9f4d-53a2a196d9c4" />
+Here is the email template:
 
-<img width="970" alt="image" src="https://github.com/user-attachments/assets/f86f1a8d-8cc9-42d6-b6be-40e88365094e" />
-<img width="970" alt="image" src="https://github.com/user-attachments/assets/19c844fc-b11f-4b08-83a1-4d0a3429f689" />
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/c8e39ab6-9571-4695-823f-96d453461a93" />
+
+Then, you complete the steps to update the appointment details."
+
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/231a69cc-61fe-4c5a-8ed2-647799c80700" />
+
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/0af29592-9a52-43b6-9901-6150d5b5afb2" />
+
+<img width="951" alt="image" src="https://github.com/user-attachments/assets/6fafb5e4-5120-43bb-9ea9-f8e57e719df8" />
+
 <img width="970" alt="image" src="https://github.com/user-attachments/assets/7c69ff8d-b0ad-47bf-98f3-bcd2456094d9" />
 
 ---
