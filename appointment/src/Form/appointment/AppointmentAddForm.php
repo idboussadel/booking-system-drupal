@@ -417,7 +417,11 @@ class AppointmentAddForm extends FormBase
       case 7:
         $form['success'] = [
           '#theme' => 'success_appointment',
+          '#title' => $this->t('YOUR APPOINTMENT HAS BEEN SUCCESSFULLY REGISTERED'),
+          '#description' => $this->t('You can modify your appointment by providing your phone number.'),
+          '#appointment_id' => $this->tempStore->get('appointment_id'),
         ];
+
         $this->tempStore->delete('step');
         break;
     }
@@ -602,7 +606,8 @@ class AppointmentAddForm extends FormBase
           ]);
 
           $appointment->save();
-
+          $this->tempStore->set('appointment_id', $appointment->id());
+          
           \Drupal::service('appointment.email_service')
             ->sendAppointmentConfirmationEmails($appointment->id());
 

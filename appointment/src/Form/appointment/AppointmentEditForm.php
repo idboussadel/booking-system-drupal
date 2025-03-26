@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
+use DateTime;
 
 /**
  * Provides a form for editing appointments.
@@ -79,6 +80,91 @@ final class AppointmentEditForm extends FormBase {
     $step = $this->tempStore->get('step') ?? 1;
     $values = $this->tempStore->get('values') ?? [];
 
+
+    if (is_numeric($appointment)) {
+      try {
+        $appointment = \Drupal::entityTypeManager()
+          ->getStorage('appointment')
+          ->load($appointment);
+
+        if (!$appointment) {
+          throw new \Exception('Appointment not found');
+        }
+
+        // Initialize tempstore if empty
+        if (empty($values['appointment_id'])) {
+          $values['appointment_id'] = $appointment->id();
+          $this->tempStore->set('values', $values);
+        }
+      } catch (\Exception $e) {
+        \Drupal::logger('appointment')->error('Error loading appointment: @error', ['@error' => $e->getMessage()]);
+        $form['error'] = [
+          '#markup' => $this->t('Invalid appointment.'),
+        ];
+        return $form;
+      }
+    }
+
+    // Now safely load from tempstore
+    $appointment = \Drupal::entityTypeManager()
+      ->getStorage('appointment')
+      ->load($values['appointment_id']);
+
+    // Get agency and advisor from the appointment
+    $agency_id = $appointment->get('agency')->target_id;
+    $advisor_id = $appointment->get('adviser')->target_id;
+
+    $working_hours = [];
+    $appointment_events = [];
+
+    // Load agency working hours
+    if (!empty($agency_id)) {
+      $agency = \Drupal::entityTypeManager()->getStorage('agency')->load($agency_id);
+      if ($agency && $agency->hasField('field_working_hours')) {
+        $agency_working_hours = $agency->get('field_working_hours')->getValue();
+        if (!empty($agency_working_hours)) {
+          $working_hours['agency'] = $this->formatWorkingHours($agency_working_hours);
+        }
+      }
+    }
+
+    // Load advisor working hours
+    if (!empty($advisor_id)) {
+      $advisor = \Drupal::entityTypeManager()->getStorage('user')->load($advisor_id);
+      if ($advisor && $advisor->hasField('field_working_hours')) {
+        $advisor_working_hours = $advisor->get('field_working_hours')->getValue();
+        if (!empty($advisor_working_hours)) {
+          $working_hours['advisor'] = $this->formatWorkingHours($advisor_working_hours);
+        }
+      }
+    }
+
+    // Load existing appointments for this agency/advisor
+    $appointments = \Drupal::entityTypeManager()
+      ->getStorage('appointment')
+      ->loadByProperties([
+        'agency' => $agency_id,
+        'adviser' => $advisor_id,
+      ]);
+
+    foreach ($appointments as $appt) {
+      $type = \Drupal::entityTypeManager()
+        ->getStorage('taxonomy_term')
+        ->load($appt->get('type')->target_id);
+      $appointment_events[] = [
+        'start' => $appt->get('start_date')->value,
+        'end' => $appt->get('end_date')->value,
+        'title' => $type ? $type->label() . '-' . $appt->get('customer_last_name')->value : 'Appointment',
+      ];
+    }
+
+    $form['#attached']['drupalSettings']['appointment'] = [
+      'working_hours' => $working_hours,
+      'existing_appointments' => $appointment_events,
+      'default_start_date' => $appointment->get('start_date')->value,
+      'default_end_date' => $appointment->get('end_date')->value,
+    ];
+
     // Load appointment if ID is passed
     if (is_numeric($appointment)) {
       try {
@@ -98,8 +184,7 @@ final class AppointmentEditForm extends FormBase {
       }
     }
 
-    // Store appointment ID if we're just starting
-    if ($step === 1 && empty($values['appointment_id']) && $appointment instanceof \Drupal\appointment\Entity\Appointment) {
+    if ($step === 1) {
       $values['appointment_id'] = $appointment->id();
       $this->tempStore->set('values', $values);
 
@@ -122,7 +207,6 @@ final class AppointmentEditForm extends FormBase {
 
     switch ($step) {
       case 2:
-        // Verification code step
         $appointment = \Drupal::entityTypeManager()
           ->getStorage('appointment')
           ->load($values['appointment_id']);
@@ -134,7 +218,6 @@ final class AppointmentEditForm extends FormBase {
 
         $form['step_2']['description'] = [
           '#markup' => '<div class="verification-description"><p>' .
-            $this->t('For security, we need to verify your identity.') . '</p><p>' .
             $this->t('A verification code has been sent to: <strong>@email</strong>',
               ['@email' => $appointment->get('customer_email')->value]) . '</p></div>',
         ];
@@ -154,12 +237,6 @@ final class AppointmentEditForm extends FormBase {
           '#attributes' => ['class' => ['verification-actions']],
         ];
 
-        $form['actions']['submit'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('Verify & Continue'),
-          '#attributes' => ['class' => ['verify-btn']],
-        ];
-
         $form['actions']['resend'] = [
           '#type' => 'submit',
           '#value' => $this->t('Resend Code'),
@@ -167,13 +244,20 @@ final class AppointmentEditForm extends FormBase {
           '#attributes' => ['class' => ['resend-btn']],
           '#limit_validation_errors' => [],
         ];
+
+        $form['actions']['submit'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Verify & Continue'),
+          '#attributes' => ['class' => ['verify-btn']],
+        ];
         break;
 
       case 3:
-        // Client info edit form
         $appointment = \Drupal::entityTypeManager()
           ->getStorage('appointment')
           ->load($values['appointment_id']);
+
+        $date_time_info = $this->extractDateTime($appointment->get('start_date')->value ?? '', $appointment->get('end_date')->value ?? '');
 
         $form['client_info_wrapper'] = [
           '#prefix' => '<div class="client-info-wrapper">',
@@ -182,9 +266,9 @@ final class AppointmentEditForm extends FormBase {
 
         $form['client_info_wrapper']['rdv_info'] = [
           '#theme' => 'client_info_select',
-          '#date' => $appointment->get('start_date')->value,
-          '#start_time' => $appointment->get('start_date')->value,
-          '#end_time' => $appointment->get('end_date')->value,
+          '#date' => $date_time_info['date'],
+          '#start_time' => $date_time_info['start_time'],
+          '#end_time' => $date_time_info['end_time'],
         ];
 
         $form['client_info_wrapper']['client_info'] = [
@@ -227,9 +311,49 @@ final class AppointmentEditForm extends FormBase {
 
         $form['client_info_wrapper']['client_info']['accept_terms'] = [
           '#type' => 'checkbox',
-          '#title' => $this->t('I accept the terms and conditions'),
+          '#title' => $this->t('En cochant cette case, j\'accepte et je reconnais avoir pris connaissance des conditions générales d\'utilisation.'),
           '#required' => TRUE,
           '#default_value' => TRUE,
+        ];
+
+        $form['actions'] = [
+          '#prefix' => '<div class="form-step1">',
+          '#suffix' => '</div>',
+        ];
+
+        $form['actions']['next'] = [
+          '#type' => 'submit',
+          '#value' => $this->t('Next'),
+          '#attributes' => ['class' => ['next-btn']],
+          '#ajax' => [
+            'callback' => '::ajaxCallback',
+            'wrapper' => 'appointment-edit-form-wrapper',
+            'effect' => 'fade',
+          ],
+        ];
+        break;
+
+      case 4:
+
+        $form['step_4'] = [
+          '#type' => 'fieldset',
+          '#title' => $this->t('Step 4: choisissez le jour et l\'heure de votre rendez-vous'),
+        ];
+
+        $form['step_4']['calendar'] = [
+          '#markup' => '<div id="fullcalendar"></div>',
+        ];
+
+        $form['step_4']['start_date'] = [
+          '#type' => 'hidden',
+          '#default_value' => $values['start_date'] ?? $appointment->get('start_date')->value,
+          '#attributes' => ['id' => 'selected-start-date'],
+        ];
+
+        $form['step_4']['end_date'] = [
+          '#type' => 'hidden',
+          '#default_value' => $values['end_date'] ?? $appointment->get('end_date')->value,
+          '#attributes' => ['id' => 'selected-end-date'],
         ];
 
         $form['actions'] = [
@@ -237,18 +361,16 @@ final class AppointmentEditForm extends FormBase {
           '#suffix' => '</div>',
         ];
 
-        $form['actions']['next'] = [
-          '#type' => 'submit',
-          '#value' => $this->t('Continue'),
-          '#attributes' => ['class' => ['next-btn']],
-        ];
+        $form['actions']['previous'] = $this->getPreviousButton();
+        $form['actions']['next'] = $this->getNextButton();
         break;
 
-      case 4:
-        // Confirmation page
+      case 5:
         $appointment = \Drupal::entityTypeManager()
           ->getStorage('appointment')
           ->load($values['appointment_id']);
+
+        $date_time_info = $this->extractDateTime($appointment->get('start_date')->value ?? '', $appointment->get('end_date')->value ?? '');
 
         $form['user'] = [
           '#prefix' => '<div class="profile">',
@@ -268,7 +390,7 @@ final class AppointmentEditForm extends FormBase {
           '#type' => 'submit',
           '#value' => $this->t('Edit'),
           '#name' => 'modifier_profile',
-          '#attributes' => ['class' => ['edit-btn']],
+          '#attributes' => ['class' => ['previous-btn']],
           '#submit' => ['::modifierProfile'],
           '#ajax' => [
             'callback' => '::ajaxCallback',
@@ -305,7 +427,7 @@ final class AppointmentEditForm extends FormBase {
           '#type' => 'submit',
           '#value' => $this->t('Edit'),
           '#name' => 'modifier_date',
-          '#attributes' => ['class' => ['edit-btn']],
+          '#attributes' => ['class' => ['previous-btn']],
           '#submit' => ['::modifierDate'],
           '#ajax' => [
             'callback' => '::ajaxCallback',
@@ -316,9 +438,9 @@ final class AppointmentEditForm extends FormBase {
 
         $form['rdv']['details'] = [
           '#theme' => 'rdv_details',
-          '#date' => $appointment->get('start_date')->value,
-          '#start_time' => $appointment->get('start_date')->value,
-          '#end_time' => $appointment->get('end_date')->value,
+          '#date' => $date_time_info['date'],
+          '#start_time' => $date_time_info['start_time'],
+          '#end_time' => $date_time_info['end_time'],
         ];
 
         $form['actions'] = [
@@ -328,31 +450,36 @@ final class AppointmentEditForm extends FormBase {
 
         $form['actions']['submit'] = [
           '#type' => 'submit',
-          '#value' => $this->t('Save Changes'),
-          '#attributes' => ['class' => ['save-btn']],
+          '#value' => $this->t('Submit'),
+          '#attributes' => ['class' => ['next-btn']],
         ];
         break;
 
-      case 5:
-        // Success page
+      case 6:
         $form['success'] = [
           '#theme' => 'success_appointment',
-          '#message' => $this->t('Your appointment has been updated successfully.'),
+          '#title' => 'YOUR APPOINTMENT HAS BEEN SUCCESSFULLY UPDATED',
+          '#description' => 'You can modify your appointment by providing your phone number.',
+          '#appointment_id' => $values['appointment_id'],
         ];
+
         $this->tempStore->delete('step');
         $this->tempStore->delete('values');
         break;
     }
 
+    $form['#attached']['library'][] = 'appointment/fullcalendar-update';
+    $form['#attached']['library'][] = 'fullcalendar/fullcalendar';
+    $form['#attached']['library'][] = 'appointment/appointment';
     return $form;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void
+  {
     $step = $this->tempStore->get('step') ?? 1;
-    $values = $this->tempStore->get('values') ?? [];
 
     switch ($step) {
       case 2:
@@ -362,13 +489,13 @@ final class AppointmentEditForm extends FormBase {
 
         if (empty($entered_code)) {
           $form_state->setErrorByName('verification_code', $this->t('Please enter the verification code.'));
-        } elseif ($entered_code !== $stored_code) {
+        }
+        elseif ($entered_code !== $stored_code) {
           $form_state->setErrorByName('verification_code', $this->t('The verification code is incorrect.'));
         }
         break;
 
       case 3:
-        // Validate client info
         $customer_first_name = $form_state->getValue('customer_first_name');
         if (empty($customer_first_name)) {
           $form_state->setErrorByName('customer_first_name', $this->t('Please enter your first name.'));
@@ -382,17 +509,29 @@ final class AppointmentEditForm extends FormBase {
         $customer_email = $form_state->getValue('customer_email');
         if (empty($customer_email)) {
           $form_state->setErrorByName('customer_email', $this->t('Please enter your email address.'));
-        } elseif (!\Drupal::service('email.validator')->isValid($customer_email)) {
+        }
+        elseif (!\Drupal::service('email.validator')->isValid($customer_email)) {
           $form_state->setErrorByName('customer_email', $this->t('Please enter a valid email address.'));
         }
 
         $customer_phone = $form_state->getValue('customer_phone');
         if (empty($customer_phone)) {
           $form_state->setErrorByName('customer_phone', $this->t('Please enter your phone number.'));
-        } elseif (!preg_match('/^[0-9]+$/', $customer_phone)) {
+        }
+        elseif (!preg_match('/^[0-9]+$/', $customer_phone)) {
           $form_state->setErrorByName('customer_phone', $this->t('Please enter a valid phone number (numbers only).'));
         }
         break;
+
+      case 4:
+        $start_date = $form_state->getValue('start_date');
+        $end_date = $form_state->getValue('end_date');
+
+        if (empty($start_date) || empty($end_date)) {
+          $form_state->setErrorByName('calendar', $this->t('Please select a time slot for your appointment.'));
+        }
+        break;
+
     }
   }
 
@@ -421,6 +560,13 @@ final class AppointmentEditForm extends FormBase {
         break;
 
       case 4:
+        $values['start_date'] = $form_state->getValue('start_date');
+        $values['end_date'] = $form_state->getValue('end_date');
+        $this->tempStore->set('values', $values);
+        $this->tempStore->set('step', 5);
+        break;
+
+      case 5:
         // Final submission - update appointment
         try {
           $appointment = \Drupal::entityTypeManager()
@@ -431,14 +577,19 @@ final class AppointmentEditForm extends FormBase {
           $appointment->set('customer_last_name', $values['customer_last_name']);
           $appointment->set('customer_email', $values['customer_email']);
           $appointment->set('customer_phone', $values['customer_phone']);
+
+          if (!empty($values['start_date'])) {
+            $appointment->set('start_date', $values['start_date']);
+          }
+          if (!empty($values['end_date'])) {
+            $appointment->set('end_date', $values['end_date']);
+          }
+
           $appointment->save();
 
-          // Send confirmation email
-          \Drupal::service('appointment.email_service')
-            ->sendAppointmentConfirmationEmails($appointment->id(), TRUE);
-
-          $this->tempStore->set('step', 5);
-        } catch (\Exception $e) {
+          $this->tempStore->set('step', 6);
+        }
+        catch (\Exception $e) {
           \Drupal::logger('appointment')->error('Error updating appointment: @error', ['@error' => $e->getMessage()]);
           $this->messenger()->addError($this->t('An error occurred while updating your appointment. Please try again.'));
         }
@@ -451,7 +602,7 @@ final class AppointmentEditForm extends FormBase {
   /**
    * Sends verification email with code.
    */
-  protected function sendVerificationEmail($email, $code) {
+  protected function sendVerificationEmail($email, $code): void {
     $params = [
       'subject' => $this->t('Your appointment verification code'),
       'body' => [
@@ -459,6 +610,10 @@ final class AppointmentEditForm extends FormBase {
         '#code' => $code,
       ],
     ];
+
+    // Ensure the body is rendered
+    $renderer = \Drupal::service('renderer');
+    $params['body'] = $renderer->renderPlain($params['body']);
 
     $this->mailManager->mail(
       'appointment',
@@ -474,7 +629,8 @@ final class AppointmentEditForm extends FormBase {
   /**
    * Resend verification code.
    */
-  public function resendVerificationCode(array &$form, FormStateInterface $form_state) {
+  public function resendVerificationCode(array &$form, FormStateInterface $form_state): void
+  {
     $code = $this->tempStore->get('verification_code');
     $values = $this->tempStore->get('values');
 
@@ -492,7 +648,8 @@ final class AppointmentEditForm extends FormBase {
   /**
    * Custom submit handler for modifier profile.
    */
-  public function modifierProfile(array &$form, FormStateInterface $form_state) {
+  public function modifierProfile(array &$form, FormStateInterface $form_state): void
+  {
     $this->tempStore->set('step', 3);
     $form_state->setRebuild();
   }
@@ -500,26 +657,139 @@ final class AppointmentEditForm extends FormBase {
   /**
    * Custom submit handler for modifier date.
    */
-  public function modifierDate(array &$form, FormStateInterface $form_state) {
-    $this->tempStore->set('step', 3);
+  public function modifierDate(array &$form, FormStateInterface $form_state): void
+  {
+    $this->tempStore->set('step', 4);
     $form_state->setRebuild();
   }
 
   /**
    * AJAX callback.
    */
-  public function ajaxCallback(array &$form, FormStateInterface $form_state) {
+  public function ajaxCallback(array &$form, FormStateInterface $form_state): array
+  {
     return $form;
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container): AppointmentEditForm|static
+  {
     return new static(
       $container->get('tempstore.private'),
       $container->get('plugin.manager.mail'),
       $container->get('language_manager')
     );
+  }
+
+  /**
+   * Extracts date, start time, and end time from start_date and end_date.
+   *
+   * @param string $start_date
+   *   The start date in ISO 8601 format (e.g., 2025-03-19T08:00:00Z).
+   * @param string $end_date
+   *   The end date in ISO 8601 format (e.g., 2025-03-19T09:00:00Z).
+   *
+   * @return array
+   *   An associative array containing:
+   *   - date: The extracted date in the format "Thursday 22 April 2021".
+   *   - start_time: The extracted start time (e.g., 08:00).
+   *   - end_time: The extracted end time (e.g., 09:00).
+   *
+   * @throws \DateMalformedStringException
+   */
+  protected function extractDateTime($start_date, $end_date): array {
+    $date = '';
+    $start_time = '';
+    $end_time = '';
+
+    if (!empty($start_date)) {
+      $date_time = new DateTime($start_date);
+      $date = $date_time->format('l j F Y');
+      $start_time = $date_time->format('H:i');
+    }
+
+    if (!empty($end_date)) {
+      $date_time = new DateTime($end_date);
+      $end_time = $date_time->format('H:i');
+    }
+
+    return [
+      'date' => $date,
+      'start_time' => $start_time,
+      'end_time' => $end_time,
+    ];
+  }
+
+  /**
+   * Returns the "Next" button configuration.
+   */
+  protected function getNextButton(): array {
+    return [
+      '#type' => 'submit',
+      '#value' => $this->t('Next'),
+      '#validate' => ['::validateForm'],
+      '#submit' => ['::submitForm'],
+      '#attributes' => ['class' => ['next-btn']],
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+        'wrapper' => 'appointment-edit-form-wrapper',
+        'effect' => 'fade',
+      ],
+    ];
+  }
+
+  /**
+   * Returns the "Previous" button configuration.
+   */
+  protected function getPreviousButton(): array {
+    return [
+      '#type' => 'submit',
+      '#value' => $this->t('Previous'),
+      '#submit' => ['::submitPrevious'],
+      '#limit_validation_errors' => [],
+      '#attributes' => ['class' => ['previous-btn']],
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+        'wrapper' => 'appointment-edit-form-wrapper',
+        'effect' => 'fade',
+      ],
+    ];
+  }
+
+  /**
+   * Custom submit handler for Previous button.
+   */
+  public function submitPrevious(array &$form, FormStateInterface $form_state): void {
+    $step = $this->tempStore->get('step');
+    $this->tempStore->set('step', $step - 1);
+    $form_state->setRebuild();
+  }
+
+  /**
+   * Formats working hours for FullCalendar.
+   */
+  protected function formatWorkingHours(array $working_hours): array
+  {
+    $formatted_hours = [];
+    foreach ($working_hours as $day => $hours) {
+      if (!empty($hours['starthours']) && !empty($hours['endhours'])) {
+        // Convert start and end times to "HH:mm" format
+        $formatTime = function ($time) {
+          $timeStr = str_pad($time, 4, '0', STR_PAD_LEFT); // Ensure 4 digits (e.g., 830 -> 0830)
+          $hours = substr($timeStr, 0, 2);
+          $minutes = substr($timeStr, 2, 2);
+          return "{$hours}:{$minutes}";
+        };
+
+        $formatted_hours[] = [
+          'daysOfWeek' => [($day + 8) % 7],
+          'startTime' => $formatTime($hours['starthours']),
+          'endTime' => $formatTime($hours['endhours']),
+        ];
+      }
+    }
+    return $formatted_hours;
   }
 }

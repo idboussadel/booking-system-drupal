@@ -364,3 +364,30 @@ input.form-tel {
 .search-form .form-tel{
   width: 20rem !important;
 }
+
+.verify-btn {
+  background-color: #64748b !important;
+  color: white !important;
+  border: 1px solid #64748b !important;
+  order: 2;
+  margin-right: 0 !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.verify-btn:hover {
+  background-color: rgba(100, 116, 139, 0.8) !important;
+}
+
+.resend-btn,.edit-btn {
+  margin-left: 0;
+  color: #64748b !important;
+  order: 1;
+}
+
+.resend-btn:hover,.edit-btn:hover {
+  background-color: #f4f8fb !important;
+}
+
+.edit-btn{
+  margin: 0 !important;
+}

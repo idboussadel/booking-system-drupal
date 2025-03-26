@@ -85,7 +85,7 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface 
     $form['add_appointment'] = [
       '#type' => 'link',
       '#title' => $this->t('+ Add Appointment'),
-      '#url' => \Drupal\Core\Url::fromUri('internal:/appointment/multi-step-form'),
+      '#url' => \Drupal\Core\Url::fromUri('internal:/prendre-un-rendez-vous'),
       '#attributes' => ['class' => ['button', 'button--primary']],
     ];
 

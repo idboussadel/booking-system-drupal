@@ -132,7 +132,7 @@ Navigate to `/prendre-un-rendez-vous`
 
 7. **Success Page**
 
-<img width="990" alt="image" src="https://github.com/user-attachments/assets/547f4a81-aa4b-4175-8e06-a5626280e6a6" />
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/819241b7-a8b3-4e0a-b3fb-907befab0321" />
 
 #### Customer confirmation email :
 I used Mailhog for email testing.
@@ -151,12 +151,25 @@ docker run --rm --name mailhog -p 8025:8025 -p 1025:1025 mailhog/mailhog
 ### Appointments list:
 Navigate to `/admin/structure/appointments`
 
-<img width="1440" alt="image" src="https://github.com/user-attachments/assets/6295a8a4-3c7d-4a5d-a14e-2e877e225929" />
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/e0a1828c-4d33-4ed1-8660-9cedcc2b4ea0" />
+
+To optimize the export process and prevent memory limit errors, we utilized Drupal's Batch API to export data in chunks of 100 records at a time.
+![image](https://github.com/user-attachments/assets/8a248c93-bfdd-4325-a7bc-2013b0a9ae83)
+
+---
 
 ### search by phone :
 Navigate to `/appointments/search`
 
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/08497498-8586-4349-bf6c-70ab8c81596c" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/08497498-8586-4349-bf6c-70ab8c81596c" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/a3669228-e29c-4cd6-825a-273d313c40da" />
+
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/c8e39ab6-9571-4695-823f-96d453461a93" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/939439ab-11b7-470b-9f4d-53a2a196d9c4" />
+
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/f86f1a8d-8cc9-42d6-b6be-40e88365094e" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/19c844fc-b11f-4b08-83a1-4d0a3429f689" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/7c69ff8d-b0ad-47bf-98f3-bcd2456094d9" />
 
 ---
 

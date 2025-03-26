@@ -14,16 +14,24 @@
               return;
             }
 
-            const workingHours = settings.appointment.working_hours;
+            // Check if appointment data exists in settings
+            if (!settings.appointment) {
+              console.error('Appointment settings not found');
+              return;
+            }
+
+            const workingHours = settings.appointment.working_hours || {};
             const existingAppointments = settings.appointment.existing_appointments || [];
+            const defaultStart = settings.appointment.default_start_date;
+            const defaultEnd = settings.appointment.default_end_date;
 
             const businessHours = [
               ...(workingHours.agency || []),
+              ...(workingHours.advisor || [])
             ];
 
             // Generate unavailable hours for the advisor
-            const unavailableEvents = generateUnavailableEvents(workingHours.agency, workingHours.advisor,existingAppointments);
-
+            const unavailableEvents = generateUnavailableEvents(workingHours.agency, workingHours.advisor, existingAppointments, settings.appointment);
             const calendar = new FullCalendar.Calendar(calendarEl, {
               initialView: 'timeGridWeek',
               headerToolbar: {
@@ -42,6 +50,7 @@
               businessHours: businessHours, // Highlight working hours
               eventOverlap: false,
               events: unavailableEvents, // Add unavailable hours as events
+              initialDate: defaultStart ? new Date(defaultStart) : null,
               selectAllow: function (selectInfo) {
                 // Check if the selected time range is within the agency's working hours
                 const start = selectInfo.start;
@@ -74,6 +83,11 @@
             });
 
             calendar.render();
+
+            // If default dates are provided, select them
+            if (defaultStart && defaultEnd) {
+              calendar.select(new Date(defaultStart), new Date(defaultEnd));
+            }
           } catch (error) {
             console.error('Error initializing calendar:', error);
             calendarEl.innerHTML = '<div class="messages messages--error">Error initializing calendar. Please check console for details.</div>';
@@ -88,7 +102,7 @@
   /**
    * Generate unavailable events based on agency and advisor working hours.
    */
-  function generateUnavailableEvents(agencyHours, advisorHours,existingAppointments) {
+  function generateUnavailableEvents(agencyHours, advisorHours, existingAppointments,appointmentSettings) {
     const unavailableEvents = [];
 
     if (!advisorHours || !agencyHours) return unavailableEvents;
@@ -130,6 +144,13 @@
 
     if (existingAppointments && existingAppointments.length > 0) {
       existingAppointments.forEach(appointment => {
+        // Skip if this is the current appointment being edited
+        if (appointmentSettings &&
+          appointment.start === appointmentSettings.default_start_date &&
+          appointment.end === appointmentSettings.default_end_date) {
+          return;
+        }
+
         unavailableEvents.push({
           start: appointment.start,
           end: appointment.end,

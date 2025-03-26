@@ -3,6 +3,7 @@ appointment:
   js:
     js/appointment.js: { }
     js/fullcalendar.js: { }
+    js/fullcalendar-update.js: { }
   css:
     theme:
       css/appointment.css: { }
