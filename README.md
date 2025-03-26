@@ -130,14 +130,13 @@ Navigate to `/prendre-un-rendez-vous`
 
 <img width="990" alt="image" src="https://github.com/user-attachments/assets/0afe39f3-1bc3-4bb9-b0d1-96e7693ac5f7" />
 
-6. **Confirmation** : Review your booking details and confirm the appointment. confirmation emails are sent.
-
-<img width="990" alt="image" src="https://github.com/user-attachments/assets/3c335ec7-ce99-4a4d-93cf-e9ef4e8c05b7" />
-
 I have also implemented translation support for French across all views by adding translations in the appointment.fr.po file to customize the messages displayed in each language :
 
 <img width="979" alt="image" src="https://github.com/user-attachments/assets/d3b6566a-f4e6-43a6-86f3-5647e0ef0df6" />
 
+6. **Confirmation** : Review your booking details and confirm the appointment. confirmation emails are sent.
+
+<img width="990" alt="image" src="https://github.com/user-attachments/assets/3c335ec7-ce99-4a4d-93cf-e9ef4e8c05b7" />
 
 7. **Success Page**
 
@@ -164,7 +163,9 @@ Navigate to `/admin/structure/appointments`
 
 To optimize the export process and prevent memory limit errors, we utilized Drupal's Batch API to export data in chunks of 100 records at a time.
 
-<img width="900" alt="image" src="https://github.com/user-attachments/assets/8a248c93-bfdd-4325-a7bc-2013b0a9ae83" />
+<div align="center">
+  <img width="900" alt="image" src="https://github.com/user-attachments/assets/8a248c93-bfdd-4325-a7bc-2013b0a9ae83" />
+</div>
 
 ---
 
@@ -181,13 +182,13 @@ Here is the email template:
 
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/c8e39ab6-9571-4695-823f-96d453461a93" />
 
-Then, you complete the steps to update the appointment details."
+Then, you complete the steps to update the appointment details :
 
 <img width="970" alt="image" src="https://github.com/user-attachments/assets/231a69cc-61fe-4c5a-8ed2-647799c80700" />
 
 <img width="970" alt="image" src="https://github.com/user-attachments/assets/0af29592-9a52-43b6-9901-6150d5b5afb2" />
 
-<img width="951" alt="image" src="https://github.com/user-attachments/assets/6fafb5e4-5120-43bb-9ea9-f8e57e719df8" />
+<img width="970" alt="image" src="https://github.com/user-attachments/assets/6fafb5e4-5120-43bb-9ea9-f8e57e719df8" />
 
 <img width="970" alt="image" src="https://github.com/user-attachments/assets/7c69ff8d-b0ad-47bf-98f3-bcd2456094d9" />
 
