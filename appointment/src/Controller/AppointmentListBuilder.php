@@ -6,11 +6,13 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Batch\BatchBuilder;
 
 /**
  * Provides a listing of Appointment entities.
@@ -154,6 +156,13 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface 
       '#limit_validation_errors' => [],
     ];
 
+    $form['filters']['actions']['export'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Export to CSV'),
+      '#submit' => ['::exportToCsv'],
+      '#weight' => 100,
+    ];
+
     return $form;
   }
 
@@ -179,6 +188,140 @@ class AppointmentListBuilder extends EntityListBuilder implements FormInterface 
 
   public function resetFilters(array &$form, FormStateInterface $form_state): void {
     $form_state->setRedirect('<current>');
+  }
+
+  /**
+   * Export to CSV submit handler.
+   */
+  public function exportToCsv(array &$form, FormStateInterface $form_state): void
+  {
+    // Get all entity IDs with current filters (without pager)
+    $query = $this->getStorage()->getQuery()
+      ->accessCheck(TRUE)
+      ->sort($this->entityType->getKey('label'));
+
+    if (!empty($this->filterValues['title'])) {
+      $query->condition('title', $this->filterValues['title'], 'CONTAINS');
+    }
+    if (!empty($this->filterValues['agency'])) {
+      $query->condition('agency', $this->filterValues['agency']);
+    }
+    if (!empty($this->filterValues['type'])) {
+      $query->condition('type', $this->filterValues['type']);
+    }
+    if (!empty($this->filterValues['adviser'])) {
+      $query->condition('adviser.entity.name', $this->filterValues['adviser'], 'CONTAINS');
+    }
+
+    $entity_ids = $query->execute();
+
+    $batch_builder = (new BatchBuilder())
+      ->setTitle($this->t('Exporting appointments'))
+      ->setInitMessage($this->t('Starting export'))
+      ->setProgressMessage($this->t('Processed @current out of @total.'))
+      ->setErrorMessage($this->t('Export has encountered an error.'));
+
+    // Add batch operations
+    $chunks = array_chunk($entity_ids, 100);
+    foreach ($chunks as $chunk) {
+      $batch_builder->addOperation([$this, 'processExportChunk'], [$chunk]);
+    }
+
+    // Set finish callback correctly
+    $batch_builder->setFinishCallback([$this, 'finishExport']);
+
+    // Set the batch
+    batch_set($batch_builder->toArray());
+  }
+
+  /**
+   * Process a chunk of entities for export.
+   * @throws \Exception
+   */
+  public function processExportChunk(array $entity_ids, array &$context): void
+  {
+    if (!isset($context['results']['file_path'])) {
+      // Create temporary file for first chunk
+      $directory = 'temporary://exports';
+      \Drupal::service('file_system')->prepareDirectory($directory, FileSystemInterface::CREATE_DIRECTORY);
+      $file_path = $directory . '/appointments_export_' . time() . '.csv';
+      $context['results']['file_path'] = $file_path;
+
+      // Write CSV headers
+      $headers = [
+        'Title', 'Start Date', 'End Date', 'Agency', 'Adviser', 'Status'
+      ];
+      $this->writeCsvLine($file_path, $headers);
+    }
+
+    // Load entities
+    $entities = $this->getStorage()->loadMultiple($entity_ids);
+
+    // Process each entity
+    foreach ($entities as $entity) {
+      $agency_label = $entity->get('agency')->entity ? $entity->get('agency')->entity->label() : '';
+      $adviser_label = $entity->get('adviser')->entity ? $entity->get('adviser')->entity->label() : '';
+
+      $row = [
+        $entity->get('title')->value,
+        $this->dateFormatter->format(strtotime($entity->get('start_date')->value), 'custom', 'd-m-Y H:i'),
+        $this->dateFormatter->format(strtotime($entity->get('end_date')->value), 'custom', 'd-m-Y H:i'),
+        $agency_label,
+        $adviser_label,
+        $entity->get('status')->value,
+      ];
+
+      $this->writeCsvLine($context['results']['file_path'], $row);
+    }
+
+    $context['message'] = $this->t('Processed @count appointments', ['@count' => count($entities)]);
+  }
+
+  /**
+   * Finish the export process.
+   */
+  public function finishExport($success = false, array $results = [], array $operations = []): void
+  {
+    if ($success && !empty($results['file_path'])) {
+      $file_path = $results['file_path'];
+
+      // Create a downloadable response
+      $response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($file_path);
+      $response->setContentDisposition(
+        \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+        'appointments_export_' . date('Y-m-d') . '.csv'
+      );
+
+      // Clean up after download
+      $response->deleteFileAfterSend(true);
+
+      // Set the response
+      \Drupal::service('page_cache_kill_switch')->trigger();
+      $response->send();
+      exit;
+    } else {
+      \Drupal::messenger()->addError($this->t('There was an error exporting the appointments.'));
+    }
+  }
+
+  /**
+   * Helper method to write a line to CSV file.
+   */
+  protected function writeCsvLine(string $file_path, array $data): void
+  {
+    $handle = fopen($file_path, 'a');
+    if ($handle === FALSE) {
+      throw new \Exception("Could not open file: $file_path");
+    }
+
+    // Convert all values to strings and handle empty values
+    $processed_data = array_map(function($item) {
+      return (string) $item;
+    }, $data);
+
+    // Write the CSV line
+    fputcsv($handle, $processed_data);
+    fclose($handle);
   }
 
   protected function getEntityIds(): array {

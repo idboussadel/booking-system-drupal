@@ -26,8 +26,9 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "list_builder" = "Drupal\appointment\Controller\AgencyListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "form" = {
+ *       "default" = "Drupal\appointment\Form\Agency\AgencyAddForm",
  *       "add" = "Drupal\appointment\Form\Agency\AgencyAddForm",
- *       "edit" = "Drupal\appointment\Form\AgencyForm",
+ *       "edit" = "Drupal\appointment\Form\Agency\AgencyAddForm",
  *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
  *       "delete-multiple-confirm" = "Drupal\Core\Entity\Form\DeleteMultipleForm",
  *     },

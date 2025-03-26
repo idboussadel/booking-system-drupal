@@ -28,10 +28,11 @@ use Drupal\user\EntityOwnerTrait;
  *     "list_builder" = "Drupal\appointment\Controller\AppointmentListBuilder",
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "form" = {
- *       "default" = "Drupal\appointment\Form\Appointment\AppointmentAddForm",
  *       "add" = "Drupal\appointment\Form\Appointment\AppointmentAddForm",
+ *       "edit" = "Drupal\appointment\Form\appointment\AppointmentEditForm",
  *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
  *       "delete-multiple-confirm" = "Drupal\Core\Entity\Form\DeleteMultipleForm",
+ *        "default" = "Drupal\appointment\Form\Appointment\AppointmentAddForm",
  *     },
  *     "route_provider" = {
  *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider",
@@ -47,7 +48,7 @@ use Drupal\user\EntityOwnerTrait;
  *   links = {
  *      "canonical" = "/appointment/{appointment}",
  *      "add-form" = "/admin/structure/appointment/add",
- *      "edit-form" = "/appointment/structure/appointment/{appointment}/edit",
+ *      "edit-form" = "/appointment/{appointment}/edit",
  *      "delete-form" = "/appointment/{appointment}/delete",
  *      "collection" = "/admin/structure/appointments"
  *    },

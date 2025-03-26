@@ -21,6 +21,7 @@ A comprehensive appointment booking system for Drupal that enables users to book
 - **Administrative Dashboard**: Comprehensive management interface for appointments
 - **Mobile Responsive**: Works across all device sizes
 - **Multilingual Support**: French and English included by default
+- **Export Appointments**: Export appointments to CSV format using Batch API
 
 ## 📑 Entities Used
 

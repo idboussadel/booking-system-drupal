@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides a multi-step form for appointment.
  */
-final class AppointmentAddForm extends FormBase
+class AppointmentAddForm extends FormBase
 {
 
   /**

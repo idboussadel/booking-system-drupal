@@ -21,3 +21,11 @@ appointment.edit:
     _form: '\Drupal\appointment\Form\appointment\AppointmentEditForm'
   requirements:
     _permission: 'access content'
+
+entity.appointment.edit_form:
+  path: '/appointment/{appointment}/edit'
+  defaults:
+    _form: '\Drupal\appointment\Form\appointment\AppointmentEditForm'
+    _title: 'Edit Appointment'
+  requirements:
+    _permission: 'administer appointment'
